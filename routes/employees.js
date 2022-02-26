@@ -1,5 +1,5 @@
 var express = require("express");
-
+var fs =require("fs");
 var bodyparser = require("body-parser");
 const { json } = require("body-parser");
 const Employees = require("../models/Employees");
@@ -14,6 +14,7 @@ router.post("/save",async(req,res)=>{
     if(body.data.id != ""){
     employees = await Employees.findById(body.data.id);
     }
+    employees.empid= body.data.empid;
     employees.name= body.data.name;
     employees.gender= body.data.gender;
     employees.birthdate= body.data.birthdate;
@@ -23,7 +24,19 @@ router.post("/save",async(req,res)=>{
     employees.joiningdate= body.data.joiningdate;
     employees.departmentname= body.data.departmentname;
     employees.relievingdate= body.data.relievingdate;
-    employees.photocode= body.data.photocode;
+
+    if (body.data.photocode != "") {
+        let imagename = (Math.random() + 1).toString(36).substring(2);
+        let imagecode = body.data.photocode.replace(/^data:image\/[a-z]+;base64,/, "");
+        imagename = "employeepics/" + imagename + ".png";
+        fs.writeFile("public/" + imagename, imagecode, 'base64', function(res) {
+                console.log("Success");
+            },
+            function(err) {
+                console.log("Error image saving-" + err);
+            });
+        employees.imagepath = imagename;
+    }
     employees.save().then(result=>{
         res.end(JSON.stringify(result));
     },err=>{

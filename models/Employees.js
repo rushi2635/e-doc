@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const schema = new Schema(
     {
+        empid:{type:String},
         name:{type:String},
         gender:{type:String},
         birthdate:{type:String},
@@ -11,7 +12,7 @@ const schema = new Schema(
         joiningdate:{type:String},
         departmentname:{type:String},
         relievingdate:{type:String},
-        photocode:{type:String}
+        imagepath:{type:String}
     }
 );
 const Employees = mongoose.model("employees", schema);
